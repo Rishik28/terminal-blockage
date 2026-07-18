@@ -1,0 +1,124 @@
+<!doctype html>
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<title>Terminal Blockage</title>
+<link href="css/style.css" rel="stylesheet"/>
+</head>
+<body>
+<div id="app">
+<aside class="pixel-panel" id="left">
+<div class="logo-lockup"><img alt="Abstract low-poly terminal monument" class="logo logo-art" src="assets/terminal_logo_art_v1.png"/><div class="brand-title"><span>Terminal</span><strong>Blockage</strong></div></div>
+<div class="tag">A falling-block roguelike</div>
+<div class="menu-box">
+<div class="menu-title">Run</div>
+<div class="run-control-grid">
+<button class="big-button" id="restart">▶ New Run</button>
+<button class="sound-toggle" id="soundToggle" type="button" aria-pressed="true"><i class="sound-icon" aria-hidden="true"></i><span>SFX ON</span></button>
+<button class="sound-toggle music-toggle" id="musicToggle" type="button" aria-pressed="true"><i class="music-icon" aria-hidden="true"></i><span>MUSIC ON</span></button>
+</div>
+</div>
+<div class="info-box">
+<div class="section-title">Wallet &amp; Record</div>
+<div class="meta"><span><i class="fragment-glyph" aria-hidden="true"></i>Fragments</span><strong id="shards">0</strong></div>
+<div class="meta"><span><i class="hud-icon icon-floor" aria-hidden="true"></i>Best Floor</span><strong id="bestFloor">0</strong></div>
+</div>
+<div class="info-box combat-help">
+<div class="section-title">How to Fight</div>
+<div class="hint">Clear lines to damage enemies.<br/>Enemies strike after a set number of locked pieces.<br/>Sealed tetrominoes cannot rotate.<br/>Earn XP, choose blessings, and descend until the stack—or the monsters—kill you.</div>
+</div>
+<div class="info-box controls-box">
+<div class="section-title">Controls</div>
+<div class="hint">← → move · ↓ soft drop<br/>Space hard drop · ↑ / X rotate<br/>Z reverse · C hold · P pause</div>
+</div>
+<div class="info-box blessings-box">
+<div class="section-title">Blessings</div>
+<div class="hint" id="buffs">None yet.</div>
+</div>
+<div class="footer">v0.3 · enemy gauntlet</div>
+</aside>
+<main class="pixel-panel" id="gamewrap">
+<div id="pauseBanner" role="status"><strong>Paused</strong><span>Press P to continue</span></div>
+<div id="deathSplash" aria-hidden="true"><div class="death-text" data-text="YOU DEAD">YOU DEAD</div></div>
+<div id="overdriveSplash" aria-hidden="true"><div class="overdrive-splash-text" aria-label="Overdrive">
+  <span class="overdrive-letter-flight" style="--sx:-65vw;--sy:-24vh;--r:-28deg;--delay:0ms"><span>O</span></span>
+  <span class="overdrive-letter-flight" style="--sx:-22vw;--sy:-65vh;--r:24deg;--delay:35ms"><span>V</span></span>
+  <span class="overdrive-letter-flight" style="--sx:65vw;--sy:-34vh;--r:31deg;--delay:70ms"><span>E</span></span>
+  <span class="overdrive-letter-flight" style="--sx:-28vw;--sy:65vh;--r:-35deg;--delay:20ms"><span>R</span></span>
+  <span class="overdrive-letter-flight" style="--sx:-65vw;--sy:18vh;--r:27deg;--delay:65ms"><span>D</span></span>
+  <span class="overdrive-letter-flight" style="--sx:18vw;--sy:-65vh;--r:-22deg;--delay:10ms"><span>R</span></span>
+  <span class="overdrive-letter-flight" style="--sx:65vw;--sy:26vh;--r:38deg;--delay:55ms"><span>I</span></span>
+  <span class="overdrive-letter-flight" style="--sx:31vw;--sy:65vh;--r:-31deg;--delay:30ms"><span>V</span></span>
+  <span class="overdrive-letter-flight" style="--sx:65vw;--sy:-8vh;--r:26deg;--delay:75ms"><span>E</span></span>
+</div></div>
+<div class="center-route route-box">
+  <div class="floor-route" id="floorRoute"><span>STRIDER</span><span>POOL</span><span>JESTER</span><span>ELITE</span><span>MONUMENT</span></div>
+</div>
+<div class="board-overdrive">
+  <div class="board-meter-label"><span><i class="hud-icon icon-wild" aria-hidden="true"></i>Fury</span><strong id="overdriveText">0%</strong></div>
+  <div class="bar overdrive-track"><div class="fill overdrivebar" id="overdrive"></div></div>
+</div>
+<div class="canvas-frame"><canvas height="720" id="game" width="360"></canvas></div>
+<div id="overlay"><div class="modal" id="modal"></div></div>
+</main>
+<aside class="pixel-panel" id="right">
+<div class="next-box">
+<div class="section-title">Piece Queue</div>
+<div class="piece-previews">
+  <div class="preview-slot" id="nextSlot"><div class="preview-label"><i class="hud-icon icon-next" aria-hidden="true"></i><span id="nextLabel">Next</span></div><canvas id="nextPiece" width="88" height="72" aria-label="Next falling piece"></canvas><div class="bomb-counter" id="bombCounter">Bomb in 6</div></div>
+  <div class="preview-slot open-window-slot" id="openWindowSlot"><div class="preview-label"><i class="hud-icon icon-next" aria-hidden="true"></i>Window</div><canvas id="nextPiece2" width="88" height="72" aria-label="Second upcoming piece"></canvas></div>
+  <div class="preview-slot"><div class="preview-label"><i class="hud-icon icon-hold" aria-hidden="true"></i>Hold</div><canvas id="holdPiece" width="88" height="72" aria-label="Held piece"></canvas></div>
+  <div class="preview-slot empty-frame-slot" id="emptyFrameSlot"><div class="preview-label"><i class="hud-icon icon-hold" aria-hidden="true"></i>Frame</div><canvas id="holdPiece2" width="88" height="72" aria-label="Second held piece"></canvas></div>
+</div>
+</div>
+<div class="enemy-box">
+<div class="section-title">Current Foe</div>
+<div class="attack-telegraph" id="attackTelegraph">
+  <strong class="attack-countdown-circle" id="attackCountdown">—</strong>
+  <div><div class="attack-label" id="attackName">NEXT ATTACK</div><div class="small" id="attackEffect">Predictable strike</div></div>
+</div>
+<div class="enemy-stage" id="enemyStage">
+  <img alt="Enemy portrait" class="enemy-portrait" src="assets/enemy_goblin.png"/>
+  <i class="enemy-rig-sprite" aria-hidden="true"></i>
+</div>
+<h3 id="enemyName">Enemy</h3>
+<div class="bar impact-bar"><div class="fill hpbar lagbar" id="enemyHpLag"></div><div class="fill hpbar" id="enemyHp"></div></div>
+<div class="small" id="enemyText"></div>
+<div class="damage-popup" id="enemyDamagePopup"></div>
+</div>
+<div class="stats-box">
+<div class="section-title">Adventurer</div>
+<div class="stat hp-stat" id="hpStat"><span class="hud-icon icon-hp" aria-hidden="true"></span><span>HP</span><strong id="hp">100</strong></div>
+<div class="bar impact-bar player-hp-track"><div class="fill player-hp lagbar" id="playerHpLag"></div><div class="fill player-hp" id="playerHp"></div></div>
+<div class="damage-popup player-damage-popup" id="playerDamagePopup"></div>
+<div class="small meter-label">EXPERIENCE</div>
+<div class="bar"><div class="fill xpbar" id="xp"></div></div>
+<div class="small" id="xpText"></div>
+<div class="stat"><span class="hud-icon icon-floor" aria-hidden="true"></span><span>Floor</span><strong id="floor">1</strong></div>
+<div class="stat"><span class="hud-icon icon-shard" aria-hidden="true"></span><span>Score</span><strong id="score">0</strong></div>
+<div class="stat"><span class="hud-icon icon-damage" aria-hidden="true"></span><span>Damage</span><strong id="damage">10</strong></div>
+<div class="stat"><span class="hud-icon icon-armor" aria-hidden="true"></span><span>Armor</span><strong id="armor">0</strong></div>
+<div class="stat"><span class="hud-icon icon-speed" aria-hidden="true"></span><span>Speed</span><strong id="speed">1.00×</strong></div>
+<div class="stat"><span class="hud-icon icon-combo" aria-hidden="true"></span><span>Combo</span><strong id="combo">—</strong></div>
+</div>
+</aside>
+</div>
+<div id="shardFlights" aria-hidden="true"></div>
+<div id="attackFx" aria-hidden="true"></div>
+<div id="emergencyFx" aria-hidden="true"><div>LAST CHANCE</div><span>3 BOMBS ARMED</span></div>
+<div id="bossDefeat" aria-hidden="true"><div class="boss-sky-hole"></div><div class="boss-door"></div><div class="boss-defeat-title">THE MONUMENT FALLS</div></div>
+<div id="floorTransition" aria-hidden="true">
+  <div class="transition-shards" id="transitionShards"></div>
+  <div class="floor-card">
+    <div class="floor-kicker">DESCENDING</div>
+    <div class="floor-number" id="transitionFloor">FLOOR 2</div>
+    <div class="floor-enemy" id="transitionEnemy">GRAVE SLIME</div>
+    <div class="floor-effect" id="transitionEffect">Ooze rise: adds a garbage row</div>
+  </div>
+</div>
+<script src="js/game.js"></script>
+</body>
+</html>
