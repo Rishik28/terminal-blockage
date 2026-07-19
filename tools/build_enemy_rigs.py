@@ -14,6 +14,7 @@ ENEMIES = {
     "memory_pool": ("tools/art/memory_pool_isolated_v1.png", (2, 5, 13), (5, 70, 78), (0, 185, 190)),
     "chaos_jester": ("tools/art/chaos_jester_isolated_v1.png", (3, 3, 13), (55, 12, 68), (255, 75, 115)),
     "monument": ("tools/art/monument_isolated_v1.png", (3, 5, 13), (15, 68, 78), (255, 105, 115)),
+    "silicon_cortex": ("tools/art/silicon_cortex_isolated_v1.png", (3, 4, 13), (28, 55, 74), (0, 185, 190)),
 }
 
 
@@ -85,9 +86,13 @@ def motion(kind, index, cx, cy, state, step):
         elif kind == "chaos_jester":
             angle = math.sin(phase + index * .9) * (1.1 if main else 2.4)
             dy = math.sin(phase + index * .63) * (1 if main else 1.8)
-        else:
+        elif kind == "monument":
             dy = math.sin(phase) * .65 if main else math.sin(phase + index) * 1.7
             angle = 0 if main else math.sin(phase + index) * 1.8
+        else:
+            dx = math.sin(phase + index * .4) * (.35 if main else 1.2)
+            dy = math.cos(phase + index * .8) * (.45 if main else 1.7)
+            angle = math.sin(phase + index) * (.35 if main else 1.5)
     elif state == 1:
         force = (0, .5, 1.2, 2.2, 1.2, -2.8, -4.2, -.7)[step]
         if kind == "memory_pool":
@@ -97,10 +102,15 @@ def motion(kind, index, cx, cy, state, step):
             angle = force * (-1 if index % 2 else 1)
             dx = math.cos(radial) * abs(force) * .7
             dy = math.sin(radial) * abs(force) * .7
-        else:
+        elif kind == "monument":
             dx = force * (-.35 if main else math.cos(radial))
             dy = force * (-.2 if main else math.sin(radial))
             scale = 1 + (max(0, -force) * .012 if main else 0)
+        else:
+            dx = force * (-.25 if main else math.cos(radial) * .75)
+            dy = force * (.18 if main else math.sin(radial) * .75)
+            angle = force * (-.3 if index % 2 else .3)
+            scale = 1 + abs(force) * (.006 if main else .012)
     elif state == 2:
         shake = (0, 5, -4, 3, -2, 1, 0, 0)[step]
         dx = shake * (1 if main else .7)
@@ -116,6 +126,8 @@ def motion(kind, index, cx, cy, state, step):
 
 def build(kind, spec):
     source = fit(spec[0])
+    if kind == "silicon_cortex":
+        source.save(ROOT / "src/assets/enemy_silicon_cortex_v1.png", optimize=True)
     pieces = components(source)
     atlas = Image.new("RGBA", (1920, 680), (0, 0, 0, 0))
     for state in range(4):

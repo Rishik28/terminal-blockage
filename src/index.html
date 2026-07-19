@@ -55,6 +55,7 @@
   <span class="overdrive-letter-flight" style="--sx:65vw;--sy:-8vh;--r:26deg;--delay:75ms"><span>E</span></span>
 </div></div>
 <div class="center-route route-box">
+  <div class="route-chapter" id="routeChapter">CYCLE I · MATERIAL FAULT</div>
   <div class="floor-route" id="floorRoute"><span>STRIDER</span><span>POOL</span><span>JESTER</span><span>ELITE</span><span>MONUMENT</span></div>
 </div>
 <div class="board-overdrive">
@@ -114,11 +115,23 @@
   <div class="transition-shards" id="transitionShards"></div>
   <div class="floor-card">
     <div class="floor-kicker">DESCENDING</div>
+    <div class="floor-cycle" id="transitionCycle">CYCLE I · MATERIAL FAULT</div>
     <div class="floor-number" id="transitionFloor">FLOOR 2</div>
     <div class="floor-enemy" id="transitionEnemy">GRAVE SLIME</div>
     <div class="floor-effect" id="transitionEffect">Ooze rise: adds a garbage row</div>
   </div>
 </div>
+<aside id="debugMenu" aria-hidden="true">
+  <div class="debug-head"><strong>DEBUG TERMINAL</strong><button type="button" data-debug="close">F2 CLOSE</button></div>
+  <div class="debug-grid">
+    <section><b>ENCOUNTER</b><div class="debug-row"><select id="debugEnemy"><option value="strider">Chrome Strider</option><option value="pool">Memory Pool</option><option value="jester">Chaos Jester</option><option value="monument">The Monument</option><option value="cortex">Silicon Cortex</option></select><button type="button" data-debug="enemy">LOAD</button></div><div class="debug-row"><input id="debugFloor" type="number" min="1" max="99" value="1"/><button type="button" data-debug="floor">SET FLOOR</button><button type="button" data-debug="attack">ATTACK</button></div></section>
+    <section><b>STATE</b><div class="debug-buttons"><button type="button" data-debug="heal">FULL HP</button><button type="button" data-debug="hurt">-25 HP</button><button type="button" data-debug="kill">DEFEAT FOE</button><button type="button" data-debug="overdrive">OVERDRIVE</button><button type="button" data-debug="xp">+1 LEVEL</button><button type="button" data-debug="fragments">+25 FRAGMENTS</button></div></section>
+    <section><b>ACTIVE PIECE</b><div class="debug-buttons"><button type="button" data-piece="BOMB">BOMB</button><button type="button" data-piece="GHOST:T">GHOST</button><button type="button" data-piece="SEALED:T">SEALED</button><button type="button" data-piece="TENTACLE:0">IMPOSSIBLE</button></div></section>
+    <section><b>BOARD</b><div class="debug-buttons"><button type="button" data-debug="clear-board">CLEAR</button><button type="button" data-debug="danger">DANGER STACK</button></div></section>
+    <section><b>BLESSING</b><div class="debug-row"><select id="debugBlessing"></select><button type="button" data-debug="blessing">GRANT</button></div></section>
+    <section><b>RELICS</b><div class="debug-buttons"><button type="button" data-relic="openWindow">OPEN WINDOW</button><button type="button" data-relic="emptyFrame">EMPTY FRAME</button><button type="button" data-relic="shortFuse">SHORT FUSE</button></div></section>
+  </div>
+</aside>
 <script src="js/game.js"></script>
 </body>
 </html>
